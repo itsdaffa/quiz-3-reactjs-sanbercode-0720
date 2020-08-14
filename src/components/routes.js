@@ -1,5 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import {Switch, Route} from "react-router"
+import {useHistory} from 'react-router-dom'
+import history from './history'
 
 import {Home, Navbar} from '../main/index'
 import About from '../main/about'
@@ -9,37 +11,38 @@ import Login from '../main/login'
 
 import ProtectedRoute from './protectedroute'
 
-import {AuthProvider} from './authcontext'
+import {AuthContext} from './authcontext'
 
 const Routes = () => {
-  const [user, setUser] = useState(false)
-  const handleLogin = e => {
-    e.preventDefault()
-    console.log(user)
-    setUser(true)
-  }
+  const [user, setUser] = useContext(AuthContext)
+  // const history = useHistory()
+  // console.log(useContext(AuthContext))
 
-  const handleLogout = e => {
-    e.preventDefault()
-    setUser(false)
-  }
+  // const handleLogin = e => {
+  //   e.preventDefault()
+  //   history.push("/about")
+  //   setUser(true)
+  // }
+
+
   return (
-    <>
-    <AuthProvider>
 
+  <>
     <Navbar />
     <Switch>
       <Route exact path="/" component={Home} />
       <Route exact path="/about" component={About} />
       <Route exact path = "/contact" component={Contact} />
-      <Route exact path = "/login" handleLogin={handleLogin} 
-        render={props => <Login {...props} user={user} handleLogin={handleLogin} />} />
-      <Route exact path ="/editor" component={Editor} />
-      {/* <ProtectedRoute exact path ='/editor' user={user} handleLogout={handleLogout} component={Editor} /> */}
+      <Route exact path = "/login">
+        <Login />
+      </Route>
+      {/* <Route exact path = "/login" 
+        render={props => <Login {...props} user={user} handleLogin={handleLogin} />} /> */}
+      <ProtectedRoute exact path ="/editor" user={user} component={Editor}/>
     </Switch>
+</> 
+  
 
-    </AuthProvider>
-    </>
   )
 }
 
